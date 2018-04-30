@@ -5,13 +5,7 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearSnapHelper
 import com.chahinem.pageindicator.sample.MyAdapter.MyItem
 import com.squareup.picasso.Picasso.Builder
-import kotlinx.android.synthetic.main.activity_main.leftBtn
-import kotlinx.android.synthetic.main.activity_main.list
-import kotlinx.android.synthetic.main.activity_main.manualPageIndicator
-import kotlinx.android.synthetic.main.activity_main.pageIndicator
-import kotlinx.android.synthetic.main.activity_main.pager
-import kotlinx.android.synthetic.main.activity_main.pagerPageIndicator
-import kotlinx.android.synthetic.main.activity_main.rightBtn
+import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -65,6 +59,18 @@ class MainActivity : AppCompatActivity() {
             "New York, New York",
             "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod",
             "https://scontent-cdg2-1.cdninstagram.com/t51.2885-15/e35/23101824_1822687121355425_8930059065124454400_n.jpg"),
+        MyItem(
+                "New York, New York",
+                "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod",
+                "https://scontent-cdg2-1.cdninstagram.com/t51.2885-15/e35/23101824_1822687121355425_8930059065124454400_n.jpg"),
+        MyItem(
+                "New York, New York",
+                "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod",
+                "https://scontent-cdg2-1.cdninstagram.com/t51.2885-15/e35/23101824_1822687121355425_8930059065124454400_n.jpg"),
+        MyItem(
+                "New York, New York",
+                "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod",
+                "https://scontent-cdg2-1.cdninstagram.com/t51.2885-15/e35/23101824_1822687121355425_8930059065124454400_n.jpg"),
         MyItem(
             "New York, New York",
             "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod",
