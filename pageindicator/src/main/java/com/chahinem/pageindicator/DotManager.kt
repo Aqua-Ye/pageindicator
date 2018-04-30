@@ -154,7 +154,7 @@ internal class DotManager(
     if (needScroll) {
       val startBound = selectedIndex * (dotSize + dotSpacing)
       if (startBound < scrollAmount) {
-        scrollAmount = selectedIndex * (dotSize + dotSpacing)
+        scrollAmount = startBound
         targetScrollListener?.scrollToTarget(scrollAmount)
       }
     }

@@ -4,6 +4,7 @@ import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
+import android.graphics.RectF
 import android.os.Parcelable
 import android.support.v4.view.PagerAdapter
 import android.support.v4.view.ViewPager
@@ -27,13 +28,17 @@ class PageIndicator @JvmOverloads constructor(
 
   private val defaultPaint = Paint().apply { isAntiAlias = true }
   private val selectedPaint = Paint().apply { isAntiAlias = true }
+  private val rect = RectF()
 
+  private val type: Int
   private val dotSize: Int
   private val dotSizeMap: Map<Byte, Int>
   private val dotBound: Int
   private val dotSpacing: Int
   private val animDuration: Long
   private val animInterpolator: Interpolator
+  private val lineHeight: Int
+  private val lineRadius: Int
 
   private var dotManager: DotManager? = null
   private var scrollAmount: Int = 0
@@ -69,8 +74,11 @@ class PageIndicator @JvmOverloads constructor(
 
   init {
     val ta = getContext().obtainStyledAttributes(attrs, R.styleable.PageIndicator)
+
+    type = ta.getInteger(R.styleable.PageIndicator_piType, 0)
+
     dotSizeMap = mapOf(
-        BYTE_6 to ta.getDimensionPixelSize(R.styleable.PageIndicator_piSize1, 6.dp),
+        BYTE_6 to ta.getDimensionPixelSize(R.styleable.PageIndicator_piSize1, 6f.dp),
         BYTE_5 to ta.getDimensionPixelSize(R.styleable.PageIndicator_piSize2, 5f.dp),
         BYTE_4 to ta.getDimensionPixelSize(R.styleable.PageIndicator_piSize3, 4.5f.dp),
         BYTE_3 to ta.getDimensionPixelSize(R.styleable.PageIndicator_piSize4, 3f.dp),
@@ -79,7 +87,7 @@ class PageIndicator @JvmOverloads constructor(
     )
     dotSize = dotSizeMap.values.max() ?: 0
     dotSpacing = ta.getDimensionPixelSize(R.styleable.PageIndicator_piDotSpacing, 3.dp)
-    dotBound = ta.getDimensionPixelSize(R.styleable.PageIndicator_piDotBound, 40.dp)
+    dotBound = ta.getDimensionPixelSize(R.styleable.PageIndicator_piDotBound, 42.dp) // 5 * dotSize + 4 * dotSpacing
 
     animDuration = ta.getInteger(
         R.styleable.PageIndicator_piAnimDuration, DEFAULT_ANIM_DURATION).toLong()
@@ -90,13 +98,19 @@ class PageIndicator @JvmOverloads constructor(
     animInterpolator = AnimationUtils.loadInterpolator(context, ta.getResourceId(
         R.styleable.PageIndicator_piAnimInterpolator,
         R.anim.pi_default_interpolator))
+
+    lineHeight = ta.getDimensionPixelSize(R.styleable.PageIndicator_piLineHeight, 0.dp)
+    lineRadius = ta.getDimensionPixelSize(R.styleable.PageIndicator_piLineRadius, 0.dp)
+
     ta.recycle()
   }
 
   override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
     super.onMeasure(widthMeasureSpec, heightMeasureSpec)
     // FIXME: add support for `match_parent`
-    setMeasuredDimension(4 * (dotSize + dotSpacing) + dotBound, dotSize)
+    val w = 4 * (dotSize + dotSpacing) + dotBound
+    val h = dotSize
+    setMeasuredDimension(w, h)
   }
 
   override fun onDraw(canvas: Canvas?) {
@@ -107,14 +121,40 @@ class PageIndicator @JvmOverloads constructor(
 
     paddingStart += (dotSize + dotSpacing) * start
     (start until end).forEach {
-      canvas?.drawCircle(
+      if (type == 0) {
+        defaultPaint.alpha = 255
+        canvas?.drawCircle(
           paddingStart + dotSize / 2f - scrollAmount,
           dotSize / 2f,
           dotSizes[it] / 2f,
           when (dotManager?.dots?.get(it)) {
             BYTE_6 -> selectedPaint
             else -> defaultPaint
-          })
+          }
+        )
+      } else {
+        val cx = paddingStart + dotSize / 2f - scrollAmount
+        val cy = dotSize / 2f
+        val width = dotSize /* * dotSizes[it] / dotSize // scale line */
+        val height = lineHeight
+        val left = cx - width / 2f
+        val top = cy - height / 2
+        val right = cx + width / 2f
+        val bottom = cy + height / 2
+        rect.left = left
+        rect.top = top
+        rect.right = right
+        rect.bottom = bottom
+        defaultPaint.alpha = 255 * dotSizes[it] / dotSize
+        canvas?.drawRoundRect(
+          rect,
+          lineRadius.toFloat(), lineRadius.toFloat(),
+          when (dotManager?.dots?.get(it)) {
+            BYTE_6 -> selectedPaint
+            else -> defaultPaint
+          }
+        )
+      }
       paddingStart += dotSize + dotSpacing
     }
   }

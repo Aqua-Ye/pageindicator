@@ -58,6 +58,17 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="8dp"
+        app:piType="line"
+        app:piDotSpacing="6dp"
+        app:piSize6="5dp"
+        app:piSize5="5dp"
+        app:piSize4="10dp"
+        app:piSize3="10dp"
+        app:piSize2="15dp"
+        app:piSize1="15dp"
+        app:piDotBound="57dp"
+        app:piLineHeight="3dp"
+        app:piLineRadius="8dp"
         />
 
     <TextView
